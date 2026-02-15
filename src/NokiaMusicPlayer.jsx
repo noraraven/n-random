@@ -186,6 +186,7 @@ export default function NokiaMusicPlayer() {
           border: "4px solid #0B3D0B",
           boxShadow: "inset 0 0 6px #0B3D0B",
           marginBottom: "20px",
+          pointerEvents: "none",
         }}
       />
 
