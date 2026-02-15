@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 
 const musicVideos = [
   "dQw4w9WgXcQ",
@@ -19,8 +19,8 @@ const musicVideos = [
 ];
 
 export default function NokiaMusicPlayer() {
-  const playerRef = useRef(null);
   const containerRef = useRef(null);
+  const playerRef = useRef(null);
 
   const [glitchText, setGlitchText] = useState("(n.r)andom");
   const [time, setTime] = useState("");
@@ -28,22 +28,14 @@ export default function NokiaMusicPlayer() {
   const getRandomVideo = () =>
     musicVideos[Math.floor(Math.random() * musicVideos.length)];
 
-  const playRandomVideo = () => {
-    if (!playerRef.current) return;
-    const random = getRandomVideo();
-    playerRef.current.loadVideoById(random);
-  };
+  const playRandomVideo = useCallback(() => {
+    if (playerRef.current && playerRef.current.loadVideoById) {
+      const randomVideo = getRandomVideo();
+      playerRef.current.loadVideoById(randomVideo);
+    }
+  }, []);
 
   useEffect(() => {
-    const getRandomVideo = () =>
-      musicVideos[Math.floor(Math.random() * musicVideos.length)];
-
-    const playRandomVideo = () => {
-      if (!playerRef.current) return;
-      const random = getRandomVideo();
-      playerRef.current.loadVideoById(random);
-    };
-
     const tag = document.createElement("script");
     tag.src = "https://www.youtube.com/iframe_api";
     document.body.appendChild(tag);
@@ -60,6 +52,7 @@ export default function NokiaMusicPlayer() {
           fs: 0,
         },
         events: {
+          onReady: (event) => event.target.playVideo(),
           onStateChange: (event) => {
             if (event.data === window.YT.PlayerState.ENDED) {
               playRandomVideo();
@@ -68,15 +61,13 @@ export default function NokiaMusicPlayer() {
         },
       });
     };
-  }, []);
+  }, [playRandomVideo]);
 
   useEffect(() => {
     const glitchInterval = setInterval(() => {
-      const original = "(n.r)andom";
-      const chars = original.split("");
-      const randomIndex = Math.floor(Math.random() * chars.length);
-      chars[randomIndex] = String.fromCharCode(
-        33 + Math.floor(Math.random() * 94),
+      const chars = "(n.r)andom".split("");
+      chars[Math.floor(Math.random() * chars.length)] = String.fromCharCode(
+        33 + Math.floor(Math.random() * 94)
       );
       setGlitchText(chars.join(""));
     }, 120);
@@ -195,7 +186,6 @@ export default function NokiaMusicPlayer() {
           border: "4px solid #0B3D0B",
           boxShadow: "inset 0 0 6px #0B3D0B",
           marginBottom: "20px",
-          pointerEvents: "none"
         }}
       />
 

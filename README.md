@@ -1,11 +1,14 @@
 # n.random
 
-(n.r)andom is a retro-style single-page music video player inspired by old Nokia phones. It plays a precurated list of YouTube music videos randomly and lets you skip to another random music.
+n.random is a retro-style single-page music video player inspired by old Nokia phones. It plays a random precurated list of YouTube music videos and lets you play another random video with a button.
+
+![Demo](/demo.png)
+
 ## Live Site
 
 Check the live version here:  
-[https://yourdomain.com](https://yourdomain.com)
+[n.random](https://n-random.vercel.app/)
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE). Credit to the original author is would be appreciated.
+This project is licensed under the [MIT License](LICENSE).
