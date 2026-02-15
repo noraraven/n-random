@@ -25,19 +25,16 @@ export default function NokiaMusicPlayer() {
   const [glitchText, setGlitchText] = useState("(n.r)andom");
   const [time, setTime] = useState("");
 
-  const getRandomVideo = useCallback(
-    () => musicVideos[Math.floor(Math.random() * musicVideos.length)],
-    []
-  );
+  const getRandomVideo = () =>
+    musicVideos[Math.floor(Math.random() * musicVideos.length)];
 
   const playRandomVideo = useCallback(() => {
     if (playerRef.current && playerRef.current.loadVideoById) {
       const randomVideo = getRandomVideo();
       playerRef.current.loadVideoById(randomVideo);
-      playerRef.current.mute();
-      playerRef.current.playVideo();
+      playerRef.current.setVolume(100);
     }
-  }, [getRandomVideo]);
+  }, []);
 
   useEffect(() => {
     const tag = document.createElement("script");
@@ -48,19 +45,14 @@ export default function NokiaMusicPlayer() {
       playerRef.current = new window.YT.Player(containerRef.current, {
         videoId: getRandomVideo(),
         playerVars: {
-          autoplay: 1,
+          autoplay: 0,
           controls: 0,
           rel: 0,
           modestbranding: 1,
           disablekb: 1,
           fs: 0,
-          mute: 1, // start muted
         },
         events: {
-          onReady: (event) => {
-            event.target.mute(); // ensure muted
-            event.target.playVideo();
-          },
           onStateChange: (event) => {
             if (event.data === window.YT.PlayerState.ENDED) {
               playRandomVideo();
@@ -69,7 +61,7 @@ export default function NokiaMusicPlayer() {
         },
       });
     };
-  }, [getRandomVideo, playRandomVideo]);
+  }, [playRandomVideo]);
 
   useEffect(() => {
     const glitchInterval = setInterval(() => {
